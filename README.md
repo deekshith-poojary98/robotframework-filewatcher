@@ -2,6 +2,7 @@
 ![Robot Framework 7+](https://img.shields.io/badge/robot%20framework-7%2B-lightgrey)
 ![License Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)
 [![CI Tests](https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/code-checks.yml/badge.svg)](https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/code-checks.yml)
+[![Docs Build](https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/generate-docs.yml/badge.svg)](https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/generate-docs.yml)
 
 # robotframework-filewatcher
 
