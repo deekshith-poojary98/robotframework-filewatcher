@@ -23,12 +23,12 @@ Supports:
 
 Perfect for:
 
-- Download verification
 - Generated report validation
 - Export/import workflow testing
 - Batch file processing
 - Background file synchronization
 - Event-driven automation pipelines
+- Monitoring application output directories
 
 ---
 
@@ -136,11 +136,10 @@ Wait For Generated Report
 
 ## Common Use Cases
 
-- Wait for browser downloads to complete
 - Validate generated report files
-- Monitor export and import workflows
+- Monitor export workflows
 - Track batch file production
-- Detect deleted files or cleanup actions
+- Detect deleted files
 - Observe background processes writing to disk
 
 ---
