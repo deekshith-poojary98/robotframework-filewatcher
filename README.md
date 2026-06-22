@@ -1,13 +1,34 @@
-# robotframework-filewatcher
+<div align="center">
 
-[![PyPI version](https://badge.fury.io/py/robotframework-filewatcher.svg)](https://badge.fury.io/py/robotframework-filewatcher)
-![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
-![License Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)
-[![CI Tests](https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/code-checks.yml/badge.svg)](https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/code-checks.yml)
-[![Docs Build](https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/generate-docs.yml/badge.svg)](https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/generate-docs.yml)
+<h1>Filewatcher</h1>
 
+<h3>Stop polling files. Start waiting for events.</h3>
 
-A modern Robot Framework library for event-driven filesystem testing.
+<p>
+<i>A modern Robot Framework library for event-driven filesystem testing.</i>
+</p>
+
+<br>
+
+<a href="https://badge.fury.io/py/robotframework-filewatcher">
+    <img src="https://badge.fury.io/py/robotframework-filewatcher.svg" alt="PyPI version">
+</a>
+
+<img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python 3.10+">
+
+<img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License">
+
+<a href="https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/code-checks.yml">
+    <img src="https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/code-checks.yml/badge.svg" alt="CI Tests">
+</a>
+
+<a href="https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/generate-docs.yml">
+    <img src="https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/generate-docs.yml/badge.svg" alt="Docs Build">
+</a>
+
+</div>
+<br>
+
 
 `robotframework-filewatcher` allows Robot Framework tests to monitor file creation, modification, deletion, and file stability using native OS filesystem events powered by `watchdog`.
 
@@ -23,12 +44,12 @@ Supports:
 
 Perfect for:
 
+- Download verification
 - Generated report validation
 - Export/import workflow testing
 - Batch file processing
 - Background file synchronization
 - Event-driven automation pipelines
-- Monitoring application output directories
 
 ---
 
@@ -104,6 +125,12 @@ The keyword categories above are implemented across two internal modules in the 
 
 ## Quick Start
 
+Install from PyPi
+
+```bash
+pip install robotframework-filewatcher
+```
+
 Install from the repository:
 
 ```bash
@@ -136,10 +163,11 @@ Wait For Generated Report
 
 ## Common Use Cases
 
+- Wait for browser downloads to complete
 - Validate generated report files
-- Monitor export workflows
+- Monitor export and import workflows
 - Track batch file production
-- Detect deleted files
+- Detect deleted files or cleanup actions
 - Observe background processes writing to disk
 
 ---
