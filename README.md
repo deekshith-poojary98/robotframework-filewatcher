@@ -11,6 +11,8 @@ A modern Robot Framework library for event-driven filesystem testing.
 
 Unlike polling-based approaches, FileWatcher maintains a thread-safe event history, supports multiple concurrent waiters, and provides high-level Robot Framework keywords for waiting, querying, and validating filesystem activity.
 
+You can find the keyword documentation [here](https://deekshith-poojary98.github.io/robotframework-filewatcher/)
+
 Supports:
 
 - Windows
