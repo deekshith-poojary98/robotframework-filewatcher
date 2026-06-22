@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "robotframework-filewatcher"
 version = "0.1.0"
-description = "A production-grade Robot Framework library for file system monitoring using watchdog."
+description = "A Robot Framework library for file system monitoring using watchdog."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
