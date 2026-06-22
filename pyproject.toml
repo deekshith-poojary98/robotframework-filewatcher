@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robotframework-filewatcher"
+version = "0.1.0"
+description = "A production-grade Robot Framework library for file system monitoring using watchdog."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [
+    {name = "Deekshith Poojary", email = "deekshithpoojary355@gmail.com"}
+]
+keywords = ["robotframework", "filesystem", "monitoring", "watchdog", "testing", "automation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Testing",
+    "Topic :: System :: Monitoring",
+]
+dependencies = [
+    "robotframework>=7.0.0",
+    "watchdog>=4.0.0",
+    "robotframework-pythonlibcore>=4.3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "black>=24.0.0",
+    "mypy>=1.8.0",
+    "types-setuptools",
+    "build>=1.0.0",
+]
+
+[project.urls]
+Repository = "https://github.com/deekshith-poojary98/robotframework-filewatcher"
+"Bug Tracker" = "https://github.com/deekshith-poojary98/robotframework-filewatcher/issues"
+Documentation = "https://github.com/deekshith-poojary98/robotframework-filewatcher#readme"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310", "py311", "py312"]
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+filterwarnings = [
+    "ignore:cannot collect test class 'Test'.*:pytest.PytestCollectionWarning",
+]
