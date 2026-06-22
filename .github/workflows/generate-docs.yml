@@ -6,7 +6,7 @@ on:
       - main
     paths-ignore:
       - 'docs/**'
-      - '**.md'
+      - '**/*.md'
       - '.github/**'
 
 permissions:
@@ -39,9 +39,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Make docs directory and install package
+        run: |
+          mkdir -p docs
+          # make the package importable for libdoc by installing in editable mode
+          python -m pip install -e .
+
       - name: Generate documentation
         run: |
-          libdoc --name "FileWatcher" FileWatcher.library.FileWatcher docs/index.html 
+          python -m robot.libdoc --name "FileWatcher" FileWatcher.library.FileWatcher docs/index.html
           echo "Documentation generated successfully"
 
       - name: Setup Pages
