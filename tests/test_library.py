@@ -32,6 +32,7 @@ def test_library_keyword_registration() -> None:
         "Get File Events",
         "Get File Events Since",
         "Clear Event History",
+        "Get Event Types",
         "Is Watching Directory",
         "Get Watched Directories",
         "Get Current Event Id",

@@ -20,18 +20,34 @@ class WaitingKeywords:
     def wait_for_file_created(
         self, pattern: str | None = None, since_id: int = 0, timeout: float = 30.0
     ) -> dict:
-        """Waits for a file creation event matching the pattern.
+        """Wait until a creation event matching a pattern appears.
+
+        This keyword blocks until an event of type 'created' that matches the
+        optional glob `pattern` is observed in the EventStore or the
+        `timeout` is reached.
 
         Arguments:
-            pattern: Glob pattern to filter files (e.g. '*.pdf').
-            since_id: Match only events with ID greater than this value.
-            timeout: Time in seconds to wait before failing.
+            pattern: Optional glob pattern (for example "*.pdf"). If omitted,
+                any created file will match.
+            since_id: Only consider events with ID greater than this value.
+            timeout: Maximum seconds to wait before raising a timeout error.
 
-        Returns a dictionary representation of the matching FileEvent.
+        Returns:
+            dict: A dictionary representing the matched event. Typical keys
+                include 'id', 'event_type', 'src_path', 'dest_path',
+                'watched_directory', and 'timestamp'.
 
-        Examples:
-        | ${event} = | Wait For File Created | *.pdf |
-        | ${event} = | Wait For File Created | report.xlsx | since_id=12 | timeout=15 |
+        Raises:
+            FileWatcherTimeoutError: When no matching event appears before timeout.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   ${event}    Wait For File Created   *.pdf
+        |   ${event}    Wait For File Created   report.xlsx     since_id=12     timeout=15
         """
         store = self.ctx.watch_manager.get_event_store()
         event = store.wait_for_event(
@@ -46,14 +62,26 @@ class WaitingKeywords:
     def wait_for_file_modified(
         self, pattern: str | None = None, since_id: int = 0, timeout: float = 30.0
     ) -> dict:
-        """Waits for a file modification event matching the pattern.
+        """Wait until a file modification event matching `pattern` appears.
 
         Arguments:
-            pattern: Glob pattern to filter files (e.g. '*.pdf').
-            since_id: Match only events with ID greater than this value.
-            timeout: Time in seconds to wait before failing.
+            pattern: Optional glob pattern to filter modified files.
+            since_id: Only consider events with ID greater than this value.
+            timeout: Maximum seconds to wait.
 
-        Returns a dictionary representation of the matching FileEvent.
+        Returns:
+            dict: Dictionary representation of the matched modification event.
+
+        Raises:
+            FileWatcherTimeoutError: When no matching event appears before timeout.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   ${event}    Wait For File Modified   *.pdf
         """
         store = self.ctx.watch_manager.get_event_store()
         event = store.wait_for_event(
@@ -68,14 +96,26 @@ class WaitingKeywords:
     def wait_for_file_deleted(
         self, pattern: str | None = None, since_id: int = 0, timeout: float = 30.0
     ) -> dict:
-        """Waits for a file deletion event matching the pattern.
+        """Wait until a file deletion event matching `pattern` appears.
 
         Arguments:
-            pattern: Glob pattern to filter files (e.g. '*.pdf').
-            since_id: Match only events with ID greater than this value.
-            timeout: Time in seconds to wait before failing.
+            pattern: Optional glob pattern to filter deleted files.
+            since_id: Only consider events with ID greater than this value.
+            timeout: Maximum seconds to wait.
 
-        Returns a dictionary representation of the matching FileEvent.
+        Returns:
+            dict: Dictionary representation of the matched deletion event.
+
+        Raises:
+            FileWatcherTimeoutError: When no matching event appears before timeout.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   ${event}    Wait For File Deleted    *.pdf
         """
         store = self.ctx.watch_manager.get_event_store()
         event = store.wait_for_event(
@@ -90,20 +130,36 @@ class WaitingKeywords:
     def wait_until_file_stable(
         self, pattern: str, stability_time: float = 2.0, timeout: float = 30.0
     ) -> dict:
-        """Waits for a file to be stable (no new events and file size remains constant).
+        """Wait until a file matching `pattern` has stabilized.
 
-        Resolves the file path in the following order:
-        1. EventStore-first: Scan recorded events in memory.
-        2. Filesystem-second: Scan watched directories on disk.
-        3. Block/wait for a new event matching the pattern.
+        Resolution strategy:
+        1. Check EventStore for recent events matching `pattern`.
+        2. Scan watched directories on disk.
+        3. Block and wait for a new matching event if not found.
+
+        After resolving a candidate file, the function watches for both
+        filesystem size changes and new events for `stability_time` seconds
+        to consider the file stable.
 
         Arguments:
-            pattern: Glob pattern matching the file to wait for.
-            stability_time: Duration in seconds the file must remain unchanged to be stable.
-            timeout: Maximum wait time in seconds before failing.
+            pattern: Glob pattern to identify the file (required).
+            stability_time: Seconds the file must remain unchanged.
+            timeout: Maximum seconds to wait before raising a timeout.
 
         Returns:
-            dict: Dictionary representation of the stable event.
+            dict: Event dictionary representing the stable file event.
+
+        Raises:
+            FileWatcherTimeoutError: If file cannot be resolved or does not
+                stabilize before `timeout`.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   ${event}    Wait Until File Stable    *.pdf    stability_time=5    timeout=60
         """
         stability_time = float(stability_time)
         timeout = float(timeout)
@@ -212,30 +268,57 @@ class WaitingKeywords:
 
     @keyword("Get File Events")
     def get_file_events(self) -> list[dict]:
-        """Returns all events currently stored in the EventStore.
+        """Return all events currently retained in the EventStore.
 
-        Examples:
-        | ${events} = | Get File Events |
+        Returns:
+            list[dict]: A list of event dictionaries ordered by increasing ID.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   ${events}    Get File Events
         """
         store = self.ctx.watch_manager.get_event_store()
         return [e.to_dict() for e in store.get_all()]
 
     @keyword("Get File Events Since")
     def get_file_events_since(self, event_id: int) -> list[dict]:
-        """Returns all events in the EventStore with ID greater than event_id.
+        """Return events whose ID is strictly greater than `event_id`.
 
-        Examples:
-        | ${new_events} = | Get File Events Since | 42 |
+        Arguments:
+            event_id: Integer event ID to compare.
+
+        Returns:
+            list[dict]: Matching events with ID > event_id.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   ${new_events}    Get File Events Since    42
         """
         store = self.ctx.watch_manager.get_event_store()
         return [e.to_dict() for e in store.get_since(int(event_id))]
 
     @keyword("Clear Event History")
     def clear_event_history(self) -> None:
-        """Clears all events currently retained in the EventStore.
+        """Clear all events from the in-memory EventStore.
 
-        Examples:
-        | Clear Event History |
+        Use this to reset test state when previous events should not influence
+        subsequent assertions or waits.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   Clear Event History
         """
         store = self.ctx.watch_manager.get_event_store()
         store.clear()
@@ -245,17 +328,21 @@ class WaitingKeywords:
     def _wait_for_download(
         self, pattern: str, stability_time: float = 2.0, timeout: float = 30.0
     ) -> dict:
-        """Waits for a file download to complete by waiting for the file to stabilize.
+        """(Internal) Wait for a download to stabilize.
 
-        Alias for 'Wait Until File Stable'.
-
-        Arguments:
-            pattern: Glob pattern matching the file to wait for (e.g. '*.pdf').
-            stability_time: Duration in seconds the file must remain unchanged.
-            timeout: Maximum wait time in seconds.
+        Alias for `Wait Until File Stable`. Kept as a private helper for
+        historical reasons and not exported as a Robot keyword.
 
         Returns:
-            dict: Dictionary representation of the event.
+            dict: The stable FileEvent dictionary.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   ${event}    Wait For Download    *.pdf    stability_time=5    timeout=60
         """
         return self.wait_until_file_stable(pattern, stability_time, timeout)
 
@@ -263,11 +350,22 @@ class WaitingKeywords:
     def wait_until_directory_is_not_empty(
         self, path: str | Path, timeout: float = 30.0
     ) -> None:
-        """Blocks until the specified directory contains at least one entry.
+        """Block until the directory has at least one file or subdirectory.
 
         Arguments:
-            path: Directory path to watch.
-            timeout: Time in seconds to wait before failing.
+            path: Directory to monitor.
+            timeout: Maximum seconds to wait.
+
+        Raises:
+            FileWatcherTimeoutError: If the directory remains empty until timeout.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   Wait Until Directory Is Not Empty    /path/to/directory    timeout=15
         """
         resolved_path = Path(path).resolve()
         if not resolved_path.exists() or not resolved_path.is_dir():
@@ -291,16 +389,27 @@ class WaitingKeywords:
         pattern: str = "*",
         timeout: float = 30.0,
     ) -> bool:
-        """Blocks until the number of files matching pattern equals the target count.
+        """Block until the number of files matching `pattern` equals `count`.
 
         Arguments:
-            path: Directory path to scan.
-            count: Number of matching files expected.
+            path: Directory to scan.
+            count: Expected number of matching files.
             pattern: Glob pattern to count. Defaults to '*'.
-            timeout: Time in seconds to wait before failing.
+            timeout: Maximum seconds to wait.
 
         Returns:
-            bool: True when count matches.
+            bool: True when the count matches.
+
+        Raises:
+            FileWatcherTimeoutError: If the count does not match before timeout.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   Wait Until File Count Is    /path/to/directory    5    *.pdf
         """
         resolved_path = Path(path).resolve()
         if not resolved_path.exists() or not resolved_path.is_dir():
@@ -321,14 +430,23 @@ class WaitingKeywords:
     def find_files_matching_pattern(
         self, pattern: str, recursive: bool = True
     ) -> list[str]:
-        """Searches all watched directories for files matching the pattern.
+        """Search watched directories for files matching `pattern`.
 
         Arguments:
             pattern: Glob pattern to search for.
-            recursive: Whether to search recursively.
+            recursive: Whether to search recursively in subdirectories.
 
         Returns:
-            list[str]: Sorted unique absolute file paths.
+            list[str]: Sorted unique absolute file paths matching the pattern.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   @{files}    Find Files Matching Pattern    *.pdf
+        |   Log    Found @{files}
         """
         wm = self.ctx.watch_manager
         files: list[str] = []
@@ -357,26 +475,66 @@ class WaitingKeywords:
     def get_file_count(
         self, pattern: str = "*", recursive: bool = True
     ) -> int:
-        """Returns the number of files matching the pattern in watched directories.
+        """Return the number of files matching `pattern` across watched dirs.
 
         Arguments:
             pattern: Glob pattern to count. Defaults to '*'.
-            recursive: Whether to search recursively. Defaults to True.
+            recursive: Whether to search recursively (default True).
 
         Returns:
             int: Number of matching files.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   ${count}    Get File Count    *.pdf
+        |   Log    Found ${count} PDF files.
         """
         return len(self.find_files_matching_pattern(pattern, recursive))
 
     @keyword("Get Current Event Id")
     def get_current_event_id(self) -> int:
-        """Returns the ID of the latest event in the EventStore.
+        """Return the numeric ID of the most recent event in the EventStore.
 
         Returns:
-            int: The maximum event ID currently stored, or 0 if empty.
+            int: Maximum event ID currently stored, or 0 when empty.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   ${current_id}    Get Current Event Id
         """
         store = self.ctx.watch_manager.get_event_store()
         return store.get_current_event_id()
+
+    @keyword("Get Event Types")
+    def get_event_types(self) -> list[str]:
+        """Return the list of supported event type names.
+
+        This is useful for callers of `Should Have File Event` to know which
+        values are accepted for the `event_type` parameter.
+
+        Returns:
+            list[str]: ['created', 'modified', 'deleted', 'moved']
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   @{types}    Get Event Types
+        |   Log    @{types}
+        """
+        from FileWatcher.models import EventType
+
+        return [e.value for e in EventType]
 
     @keyword("Get Latest File")
     def get_latest_file(self, pattern: str | None = None, limit: int = 1) -> str | list[str]:
@@ -384,13 +542,15 @@ class WaitingKeywords:
 
         Sorts them by modification time descending and returns the latest file(s).
 
-        Arguments:
-            pattern: Glob pattern to filter files (e.g. '*.pdf').
-            limit: Maximum number of files to return.
-
-        Returns:
-            str | list[str]: A single string path or a list of string paths.
-        """
+    *Examples*
+    | ***** Settings *****
+    | Library    FileWatcher
+    |
+    | ***** Test Cases *****
+    | Example
+    |   ${latest_file}    Get Latest File    *.pdf
+    |   @{latest_files}    Get Latest File    *.pdf    limit=5
+    """
         limit = int(limit)
         glob_pattern = pattern if pattern else "*"
         wm = self.ctx.watch_manager
@@ -427,9 +587,24 @@ class WaitingKeywords:
 
     @keyword("Should Have File Event")
     def should_have_file_event(self, event_type: str | None = None, pattern: str | None = None) -> None:
-        """Asserts that at least one matching event exists in the EventStore.
+        """Assert the EventStore contains at least one matching event.
 
-        Fails with AssertionError if no match is found.
+        Arguments:
+            event_type: Optional event type string. Valid values are:
+                'created', 'modified', 'deleted', 'moved'. Use
+                `Get Event Types` to retrieve the current supported list.
+            pattern: Optional glob pattern to filter events.
+
+        Raises:
+            AssertionError: When no event matching the filters exists.
+
+        *Examples*
+        | ***** Settings *****
+        | Library    FileWatcher
+        |
+        | ***** Test Cases *****
+        | Example
+        |   Should Have File Event    event_type=created    pattern=*.pdf
         """
         store = self.ctx.watch_manager.get_event_store()
         events = store.get_all()

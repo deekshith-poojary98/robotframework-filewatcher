@@ -129,3 +129,14 @@ def test_should_have_file_event() -> None:
         # Wrong pattern: should fail
         with pytest.raises(AssertionError):
             lib.should_have_file_event(pattern="*.xlsx")
+
+
+def test_get_event_types() -> None:
+    """Verify Get Event Types returns the supported event type names."""
+    with FileWatcher() as lib:
+        types = lib.get_event_types()
+        assert isinstance(types, list)
+        # Ensure they match the EventType enum values
+        assert set(types) == set([e.value for e in EventType])
+        for t in types:
+            assert t in ("created", "modified", "deleted", "moved")

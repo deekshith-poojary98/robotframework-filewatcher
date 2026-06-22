@@ -1,6 +1,7 @@
 *** Settings ***
 Library           FileWatcher
 Library           OperatingSystem
+Library           Collections
 
 *** Variables ***
 ${MY_TEMP_DIR}       ${TEMPDIR}${/}robot_filewatcher_tests
@@ -48,7 +49,7 @@ Wait For File Stable
     
     Create File    ${MY_TEMP_DIR}${/}stable.log    part 1
     
-    ${event}=    Wait For Download    stable.log    stability_time=0.5    timeout=5.0
+    ${event}=    Wait Until File Stable    stable.log    stability_time=0.5    timeout=5.0
     Should End With    ${event}[src_path]    stable.log
     
     [Teardown]    Clean Directory And Stop Watch
@@ -86,6 +87,10 @@ Test Remaining Keywords
     
     # 6. Verify Should Have File Event
     Should Have File Event    event_type=created    pattern=*.pdf
+
+    # 6.a Verify Get Event Types includes 'created'
+    ${types}=    Get Event Types
+    Should Contain    ${types}    created
     
     # 7. Verify Get Latest File
     Create File    ${MY_TEMP_DIR}${/}newer.txt    content
