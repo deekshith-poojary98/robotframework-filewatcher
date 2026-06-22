@@ -94,6 +94,14 @@ Robot Framework Keywords
 
 ---
 
+Implementation note:
+
+The keyword categories above are implemented across two internal modules in the package:
+
+- `src/FileWatcher/keywords/watching.py` implements the "Watching" keywords.
+- `src/FileWatcher/keywords/waiting.py` implements the "Waiting", "Discovery", and "Events" keywords.
+
+
 ## Quick Start
 
 Install from the repository:

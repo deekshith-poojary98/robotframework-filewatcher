@@ -548,7 +548,6 @@ class WaitingKeywords:
     |
     | ***** Test Cases *****
     | Example
-    |   ${latest_file}    Get Latest File    *.pdf
     |   @{latest_files}    Get Latest File    *.pdf    limit=5
     """
         limit = int(limit)
