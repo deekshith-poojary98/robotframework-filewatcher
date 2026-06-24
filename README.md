@@ -26,10 +26,6 @@
     <img src="https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/generate-docs.yml/badge.svg" alt="Docs Build">
 </a>
 
-<a href="https://deepwiki.com/deekshith-poojary98/robotframework-filewatcher">
-    <img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki">
-</a>
-
 </div>
 <br>
 
@@ -113,9 +109,9 @@ Robot Framework Keywords
 | Category | Keywords |
 | --- | --- |
 | Watching | `Start Watching Directory`, `Stop Watching Directory`, `Is Watching Directory`, `Get Watched Directories` |
-| Waiting | `Wait For File Created`, `Wait For File Modified`, `Wait For File Deleted`, `Wait Until File Stable`, `Wait Until Directory Is Not Empty`, `Wait Until File Count Is` |
-| Discovery | `Get Latest File`, `Find Files Matching Pattern`, `Get File Count` |
-| Events | `Get File Events`, `Get File Events Since`, `Get Current Event Id`, `Clear Event History`, `Should Have File Event` |
+| Waiting | `Wait For File Created`, `Wait For File Modified`, `Wait For File Deleted`, `Wait Until File Stable`, `Wait Until Directory Is Not Empty`, `Wait Until Directory Is Empty`, `Wait Until File Count Is`, `Wait Until File Size Is`, `Wait Until File Checksum Changes`, `File Should Not Change` |
+| Discovery | `Get Latest File`, `Get Oldest File`, `Find Files Matching Pattern`, `Get File Count`, `Get File Checksum`, `File Checksum Should Be` |
+| Events | `Get File Events`, `Get File Events Since`, `Get Current Event Id`, `Get Event Statistics`, `Get New Files Since`, `Get Deleted Files Since`, `Clear Event History`, `Should Have File Event` |
 
 ---
 
@@ -206,6 +202,27 @@ Verify File Stability
 Clean Up Watches
     Stop Watching Directory    ${DOWNLOAD_DIR}
     Remove Directory    ${DOWNLOAD_DIR}    recursive=True
+
+*** Example ***
+File History and Checksum Validation
+    [Setup]    Create Directory    ${DOWNLOAD_DIR}
+    Start Watching Directory    ${DOWNLOAD_DIR}
+
+    # Wait until a new export appears and capture its path
+    ${event}=    Wait For File Created    export*.zip
+    Log To Console    Export created at: ${event}[src_path]
+
+    # Validate checksum after the file is fully written
+    ${sha256}=    Get File Checksum    ${event}[src_path]
+    File Checksum Should Be    ${event}[src_path]    ${sha256}
+
+    # Use event history to discover new and deleted files
+    ${checkpoint}=    Get Current Event Id
+    # perform cleanup or batch export action here
+    ${new_files}=    Get New Files Since    ${checkpoint}
+    ${deleted_files}=    Get Deleted Files Since    ${checkpoint}
+    Log To Console    New files since checkpoint: ${new_files}
+    Log To Console    Deleted files since checkpoint: ${deleted_files}
 ```
 
 ---
@@ -224,4 +241,4 @@ PYTHONPATH=src robot tests/acceptance.robot
 
 ## License
 
-Apache-2.0
+[Apache-2.0](LICENSE)

@@ -6,9 +6,9 @@ from FileWatcher.keywords.waiting import WaitingKeywords
 
 
 class FileWatcher(HybridCore):
-    """FileWatcher is a modern Robot Framework library for filesystem monitoring.
+    """``FileWatcher`` is a modern Robot Framework library for filesystem monitoring.
 
-    It uses `watchdog` to monitor directory changes in the background, collects
+    It uses ``watchdog`` to monitor directory changes in the background, collects
     events thread-safely in a non-consuming event store, and exposes keywords
     to wait for specific creation, modification, deletion, and stability states.
     """
@@ -19,13 +19,13 @@ class FileWatcher(HybridCore):
     try:
         ROBOT_LIBRARY_VERSION = importlib.metadata.version("robotframework-filewatcher")
     except importlib.metadata.PackageNotFoundError:
-        ROBOT_LIBRARY_VERSION = "0.1.0"
+        ROBOT_LIBRARY_VERSION = "0.2.0"
 
     def __init__(self, max_events: int = 10000) -> None:
         """Initializes the FileWatcher library.
 
-        Args:
-            max_events (int): The maximum number of historical events to retain.
+        `Args`:
+        - max_events (int): The maximum number of historical events to retain.
         """
         self.watch_manager = WatchManager(max_events=int(max_events))
         libraries = [

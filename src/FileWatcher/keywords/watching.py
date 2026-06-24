@@ -23,15 +23,12 @@ class WatchingKeywords:
         into the internal EventStore. Observers run in the background
         so tests can continue while events are collected.
 
-        Arguments:
-            path: Directory path to monitor. Can be relative or absolute.
-            recursive: If True (default), subdirectories are monitored too.
+        `Arguments`:
+        - path: Directory path to monitor. Can be relative or absolute.
+        - recursive: If True (default), subdirectories are monitored too.
 
-        Returns:
-            None
-
-        Raises:
-            FileWatcherError: If the path is not a directory or observer fails to start.
+        `Raises`:
+        - FileWatcherError: If the path is not a directory or observer fails to start.
 
         *Examples*
         | ***** Settings *****
@@ -47,16 +44,13 @@ class WatchingKeywords:
     def stop_watching_directory(self, path: str) -> None:
         """Stop monitoring a previously watched directory.
 
-        Arguments:
-            path: Directory path that was previously started with
+        `Arguments`:
+        - path: Directory path that was previously started with
                 `Start Watching Directory`. The path is resolved when
                 matching active watchers to stop.
 
-        Returns:
-            None
-
-        Raises:
-            FileWatcherError: If there is no active watcher for the given path.
+        `Raises`:
+        - FileWatcherError: If there is no active watcher for the given path.
 
         *Examples*
         | ***** Settings *****
@@ -75,11 +69,11 @@ class WatchingKeywords:
     def is_watching_directory(self, path: str) -> bool:
         """Return whether the library currently monitors the given directory.
 
-        Arguments:
-            path: Directory path to check. Can be relative or absolute.
+        `Arguments`:
+        - path: Directory path to check. Can be relative or absolute.
 
-        Returns:
-            bool: True if an active watcher exists for the resolved path,
+        `Returns`:
+        - bool: True if an active watcher exists for the resolved path,
             otherwise False.
         
         *Examples*
@@ -107,8 +101,8 @@ class WatchingKeywords:
         This returns absolute, unique paths for all directories currently
         being observed by the library (duplicates removed).
 
-        Returns:
-            list[str]: Sorted list of absolute paths.
+        `Returns`:
+        - list[str]: Sorted list of absolute paths.
 
         *Examples*
         | ***** Settings *****

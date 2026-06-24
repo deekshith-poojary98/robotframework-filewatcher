@@ -1,5 +1,49 @@
 # Release Notes
 
+## robotframework-filewatcher v0.2.0
+
+**Release Date:** June 24, 2026
+
+### 🚀 Overview
+
+`robotframework-filewatcher` v0.2.0 introduces expanded filesystem validation and event history utilities for Robot Framework.
+
+This release adds checksum-based file assertions, directory-empty waits, file size conditions, and event-derived file history helpers while preserving the library's existing event-driven behavior.
+
+---
+
+## ✨ Highlights
+
+### New Validation and History Keywords
+
+* `File Should Be Stable`
+* `Wait Until File Does Not Exist`
+* `Get Oldest File`
+* `Get File Checksum`
+* `File Checksum Should Be`
+* `Wait For Any File Event`
+* `Wait For File Moved`
+* `Get Event Statistics`
+* `Wait Until Directory Is Empty`
+* `Wait Until File Size Is`
+* `Wait Until File Checksum Changes`
+* `Get New Files Since`
+* `Get Deleted Files Since`
+* `File Should Not Change`
+
+### Usability Improvements
+
+* Extended waiting keywords for file stability and content change detection.
+* Added checksum streaming for large files.
+* Improved event history retrieval for created, moved, and deleted files.
+
+### Testing and Documentation
+
+* Added new unit tests and Robot Framework acceptance coverage for all new keywords.
+* Updated README documentation and examples.
+
+---
+
 ## robotframework-filewatcher v0.1.0
 
 **Release Date:** June 23, 2026

@@ -9,7 +9,7 @@ def test_library_version_and_metadata() -> None:
     """Verify version metadata on the library."""
     lib = FileWatcher()
     # Should be default fallback version or package version
-    assert lib.ROBOT_LIBRARY_VERSION in ("0.1.0", "0.1.0")  # Or whatever package is installed as
+    assert lib.ROBOT_LIBRARY_VERSION in ("0.2.0", "0.2.0")
     assert lib.ROBOT_LIBRARY_SCOPE == "GLOBAL"
     assert lib.ROBOT_AUTO_KEYWORDS is False
 
@@ -37,6 +37,14 @@ def test_library_keyword_registration() -> None:
         "Get Watched Directories",
         "Get Current Event Id",
         "Get Latest File",
+        "Get Oldest File",
+        "Get File Checksum",
+        "File Checksum Should Be",
+        "File Should Be Stable",
+        "Wait For Any File Event",
+        "Wait For File Moved",
+        "Wait Until File Does Not Exist",
+        "Get Event Statistics",
         "Should Have File Event",
     ]
     for kw in expected:
