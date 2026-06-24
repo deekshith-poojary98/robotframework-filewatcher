@@ -26,6 +26,10 @@
     <img src="https://github.com/deekshith-poojary98/robotframework-filewatcher/actions/workflows/generate-docs.yml/badge.svg" alt="Docs Build">
 </a>
 
+<a href="https://deepwiki.com/deekshith-poojary98/robotframework-filewatcher">
+    <img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki">
+</a>
+
 </div>
 <br>
 
